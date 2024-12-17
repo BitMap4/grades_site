@@ -2,7 +2,7 @@ import { Button, Input, VStack, StackSeparator, Text } from '@chakra-ui/react'
 import { Field } from '@components/ui/field'
 import { SegmentedControl } from '@components/ui/segmented-control'
 import { Toaster, toaster } from '@components/ui/toaster'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm, Controller } from 'react-hook-form'
 import axios from 'axios'
 import { useAuth } from '@contexts/AuthContext'
@@ -11,6 +11,7 @@ import { GradeChart } from '@components/GradeChart'
 const gradeOptions = ['A', 'A-', 'B', 'B-', 'C', 'C-', 'D', 'D-', 'F']
 
 export function GradeInput({ courseId }) {
+  const queryClient = useQueryClient()
   const { login } = useAuth()
   const {
     register,
@@ -50,6 +51,7 @@ export function GradeInput({ courseId }) {
         type: 'success',
         duration: 3000,
       })
+      queryClient.invalidateQueries(['grades', courseId])
       reset()
     }
   })
