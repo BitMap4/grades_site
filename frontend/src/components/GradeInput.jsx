@@ -117,35 +117,6 @@ export function GradeInput({ courseId }) {
             </Button>
             <Text fontSize={"xs"}>submissions are anonymous</Text>
           </VStack>
-{/* 
-          <Field
-            label="grade"
-            invalid={!!errors.grade}
-            errorText={errors.grade?.message}
-            required
-          >
-            <Input
-              {...register('grade', {
-                required: 'grade is required',
-                pattern: {
-                  value: /^([A-D]-?|F)$/,
-                  message: 'grade must be A, A-, B, B-, C, C-, D, D- or F'
-                }
-              })}
-              placeholder="grade (A/A-/B...)"
-            />
-          </Field>
-          <VStack align={'flex-start'} gap={0} >
-            <Button
-              type="submit"
-              isLoading={mutation.isPending}
-              loadingText="submitting..."
-            >
-              submit
-            </Button>
-            <Text fontSize={"xs"}>submissions are anonymous</Text>
-          </VStack>
-*/}
         </VStack>
         <Toaster />
       </form>
