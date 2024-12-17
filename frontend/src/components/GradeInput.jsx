@@ -78,9 +78,14 @@ export function GradeInput({ courseId }) {
               {...register('marks', { 
                 required: 'total marks required',
                 min: { value: 0, message: 'marks must be positive (over for u if its actually negative)' },
-                max: { value: 100, message: 'marks cannot be more 100 (congrats if they are)' }
+                max: { value: 100, message: 'marks cannot be more 100 (congrats if they are)' },
+                valueAsNumber: true,
+                validate: {
+                  decimal: v => Number.isFinite(v) || 'Please enter a valid number'
+                }
               })}
               type="number"
+              step={0.01}
               placeholder="course total"
             />
           </Field>
