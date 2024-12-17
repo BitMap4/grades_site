@@ -1,20 +1,28 @@
 import { Button, Input, VStack, StackSeparator, Text } from '@chakra-ui/react'
 import { Field } from '@components/ui/field'
+import { SegmentedControl } from '@components/ui/segmented-control'
 import { Toaster, toaster } from '@components/ui/toaster'
 import { useMutation } from '@tanstack/react-query'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import axios from 'axios'
 import { useAuth } from '@contexts/AuthContext'
 import { GradeChart } from '@components/GradeChart'
+
+const gradeOptions = ['A', 'A-', 'B', 'B-', 'C', 'C-', 'D', 'D-', 'F']
 
 export function GradeInput({ courseId }) {
   const { login } = useAuth()
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm({
+    defaultValues: {
+      grade: 'F'
+    }
+  })
 
   const mutation = useMutation({
     mutationFn: async (data) => {
@@ -57,7 +65,7 @@ export function GradeInput({ courseId }) {
   return (
     <>
       <form onSubmit={onSubmit}>
-        <VStack gap={4} align={"flex-start"}>
+        <VStack gap={4} align={"flex-start"} className='dark'>
           <StackSeparator />
           <Text>only 1 grade allowed per user per course. resubmitting will overwrite the previous grade.</Text>
           <Field 
@@ -76,8 +84,42 @@ export function GradeInput({ courseId }) {
               placeholder="course total"
             />
           </Field>
-          <Field 
-            label="grade" 
+
+          <Controller
+            control={control}
+            name="grade"
+            render={({ field }) => (
+              <Field
+                label="Grade"
+                invalid={!!errors.grade}
+                errorText={errors.grade?.message}
+                required
+              >
+                <SegmentedControl
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  value={field.value}
+                  items={gradeOptions}
+                  onValueChange={({ value }) => field.onChange(value)}
+                  // className="dark"
+                />
+              </Field>
+            )}
+          />
+
+          <VStack align={'flex-start'} gap={0} >
+            <Button
+              type="submit"
+              isLoading={mutation.isPending}
+              loadingText="submitting..."
+            >
+              submit
+            </Button>
+            <Text fontSize={"xs"}>submissions are anonymous</Text>
+          </VStack>
+{/* 
+          <Field
+            label="grade"
             invalid={!!errors.grade}
             errorText={errors.grade?.message}
             required
@@ -94,7 +136,7 @@ export function GradeInput({ courseId }) {
             />
           </Field>
           <VStack align={'flex-start'} gap={0} >
-            <Button 
+            <Button
               type="submit"
               isLoading={mutation.isPending}
               loadingText="submitting..."
@@ -103,6 +145,7 @@ export function GradeInput({ courseId }) {
             </Button>
             <Text fontSize={"xs"}>submissions are anonymous</Text>
           </VStack>
+*/}
         </VStack>
         <Toaster />
       </form>
