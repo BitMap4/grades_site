@@ -1,0 +1,14 @@
+{
+  "name": "grade cutoff thing",
+  "short_name": "grades",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#646cff",
+  "background_color": "#222222",
+  "display": "standalone"
+}
