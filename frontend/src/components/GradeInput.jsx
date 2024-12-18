@@ -71,7 +71,7 @@ export function GradeInput({ courseId }) {
           <StackSeparator />
           <Text>only 1 grade allowed per user per course. resubmitting will overwrite the previous grade.</Text>
           <Field 
-            label="course Total" 
+            label="course total" 
             invalid={!!errors.marks}
             errorText={errors.marks?.message}
             required
@@ -83,7 +83,7 @@ export function GradeInput({ courseId }) {
                 max: { value: 100, message: 'marks cannot be more 100 (congrats if they are)' },
                 valueAsNumber: true,
                 validate: {
-                  decimal: v => Number.isFinite(v) || 'Please enter a valid number'
+                  decimal: v => Number.isFinite(v) || 'enter a valid number'
                 }
               })}
               type="number"
