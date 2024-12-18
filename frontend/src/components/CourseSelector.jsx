@@ -1,4 +1,4 @@
-import { Stack, createListCollection } from '@chakra-ui/react'
+import { Stack, createListCollection, Input } from '@chakra-ui/react'
 import {
   SelectContent,
   SelectItem,
@@ -9,9 +9,10 @@ import {
 } from '@components/ui/select'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 export function CourseSelector({ onSelect }) {
+  const [search, setSearch] = useState('')
   const { data: courses, isLoading } = useQuery({
     queryKey: ['courses'],
     queryFn: async () => {
@@ -20,15 +21,21 @@ export function CourseSelector({ onSelect }) {
     }
   })
 
+  const filteredCourses = useMemo(() => {
+    if (!courses) return []
+    return courses.filter(course => 
+      course.name.toLowerCase().includes(search.toLowerCase()) ||
+      course.id.toLowerCase().includes(search.toLowerCase())
+    )
+  }, [courses, search])
+
   const courseCollection = useMemo(() => {
     return createListCollection({
-      items: courses || [],
+      items: filteredCourses,
       itemToString: (item) => item.name,
       itemToValue: (item) => item.id
     })
-  }, [courses])
-
-//   console.log(courseCollection)
+  }, [filteredCourses])
 
   return (
     <Stack gap="5" width="320px">
@@ -51,16 +58,28 @@ export function CourseSelector({ onSelect }) {
             borderColor: "blue.600"
           }}
         >
+          <Input
+            placeholder="search courses..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            mb={2}
+            borderRadius="md"
+            size="sm"
+            variant={'subtle'}
+            className='dark'
+          />
           {courseCollection.items.map(course => (
             <SelectItem
               item={course}
               key={course.id}
-              // _hover={{ bg: "blue.500" }}
-              // _dark={{ 
-              //   _hover: { bg: "blue.700" }
-              // }}
+              px={3}
+              py={2}
+              cursor="pointer"
             >
-              {course.name}
+              <Stack gap={0}>
+                <span>{course.name}</span>
+                <span style={{ fontSize: '0.8em', opacity: 0.8 }}>{course.id}</span>
+              </Stack>
             </SelectItem>
           ))}
         </SelectContent>
