@@ -98,7 +98,7 @@ export function GradeInput({ courseId }) {
             name="grade"
             render={({ field }) => (
               <Field
-                label="Grade"
+                label="grade"
                 invalid={!!errors.grade}
                 errorText={errors.grade?.message}
                 required

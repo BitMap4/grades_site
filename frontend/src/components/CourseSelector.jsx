@@ -24,7 +24,7 @@ export function CourseSelector({ onSelect }) {
     if (!courses) return []
     return courses.filter(course => 
       course.name.toLowerCase().includes(search.toLowerCase()) ||
-      course.id.toLowerCase().includes(search.toLowerCase())
+      course.id_sem.toLowerCase().includes(search.toLowerCase())
     )
   }, [courses, search])
 
@@ -32,7 +32,7 @@ export function CourseSelector({ onSelect }) {
     return createListCollection({
       items: filteredCourses,
       itemToString: (item) => item.name,
-      itemToValue: (item) => item.id
+      itemToValue: (item) => item.id_sem
     })
   }, [filteredCourses])
 
@@ -72,14 +72,14 @@ export function CourseSelector({ onSelect }) {
           {courseCollection.items.map(course => (
             <SelectItem
               item={course}
-              key={course.id}
+              key={course.id_sem}
               px={3}
               py={2}
               cursor="pointer"
             >
               <Stack gap={0}>
                 <span>{course.name}</span>
-                <span style={{ fontSize: '0.8em', opacity: 0.8 }}>{course.id}</span>
+                <span style={{ fontSize: '0.8em', opacity: 0.8 }}>{course.id_sem.split("_")[0]}&nbsp;&nbsp;•&nbsp;&nbsp;{course.id_sem.split("_")[1]}</span>
               </Stack>
             </SelectItem>
           ))}

@@ -13,6 +13,12 @@ class Grade(BaseModel):
     class Config:
         from_attributes = True
 
+class CourseDB(Base):
+    __tablename__ = "courses"
+    id_sem = Column(String, primary_key=True)
+    name = Column(String)
+    sem = Column(String)
+
 class GradeDB(Base):
     __tablename__ = "grades"
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))

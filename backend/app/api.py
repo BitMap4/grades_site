@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from typing import List
 from .config import SessionLocal
-from .models import GradeDB, Grade, UserDB
+from .models import GradeDB, Grade, UserDB, CourseDB
 from .auth import get_current_user, router
 
 app = FastAPI()
@@ -15,14 +15,13 @@ def get_db():
     finally: db.close()
 
 @app.get("/courses")
-async def get_courses():
+async def get_courses(db: Session = Depends(get_db)):
+    courses = db.query(CourseDB).order_by(CourseDB.id_sem).all()
     return [
-        {"id": "MA6.101", "name": "Probability and Statistics"},
-        {"id": "CS2.203", "name": "Language and Society"},
-        {"id": "CL3.202", "name": "Computational Linguistics-2"},
-        {"id": "CS1.301", "name": "Algorithm Analysis and Design"},
-        {"id": "CS1.302", "name": "Automata Theory"},
-        {"id": "CS4.301", "name": "Data and Applications"}
+        {
+            "id_sem": course.id_sem,
+            "name": course.name
+        } for course in courses
     ]
 
 @app.post("/grades")

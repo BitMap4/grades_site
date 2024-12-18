@@ -17,7 +17,7 @@ function AppContent() {
     <Container maxW="container.sm" py={10}>
       <HStack mb={6}>
         <Spacer />
-        <Button onClick={logout}>Logout</Button>
+        <Button onClick={logout}>logout</Button>
       </HStack>
       <CourseSelector onSelect={setSelectedCourse} />
       {selectedCourse && <GradeInput courseId={selectedCourse} />}
