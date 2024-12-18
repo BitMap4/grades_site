@@ -2,7 +2,6 @@ import { Stack, createListCollection, Input } from '@chakra-ui/react'
 import {
   SelectContent,
   SelectItem,
-  SelectLabel,
   SelectRoot,
   SelectTrigger,
   SelectValueText,
