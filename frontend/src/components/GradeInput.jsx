@@ -89,6 +89,7 @@ export function GradeInput({ courseId }) {
               type="number"
               step={0.01}
               placeholder="course total"
+              variant={'subtle'}
             />
           </Field>
 
@@ -114,7 +115,7 @@ export function GradeInput({ courseId }) {
             )}
           />
 
-          <VStack align={'flex-start'} gap={0} >
+          <VStack alignSelf={'center'} gap={0} >
             <Button
               type="submit"
               isLoading={mutation.isPending}

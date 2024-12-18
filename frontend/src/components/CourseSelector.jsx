@@ -44,19 +44,21 @@ export function CourseSelector({ onSelect }) {
         collection={courseCollection}
         onValueChange={ (c) => onSelect(c?.value[0]) }
         disabled={isLoading}
+        variant="subtle"
+        className='dark'
       >
         <SelectTrigger>
-          <SelectValueText placeholder="Select course" />
+          <SelectValueText placeholder="select course" />
         </SelectTrigger>
         <SelectContent
           bg="gray.800"
           borderColor="gray.700"
           borderRadius="lg"
-          boxShadow="lg"
-          _dark={{
-            bg: "gray.900",
-            borderColor: "blue.600"
-          }}
+          boxShadow="0 4px 8px -1px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2)"
+          // _dark={{
+          //   bg: "gray.900",
+          //   borderColor: "blue.600"
+          // }}
         >
           <Input
             placeholder="search courses..."

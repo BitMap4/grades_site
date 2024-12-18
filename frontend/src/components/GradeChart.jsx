@@ -88,7 +88,7 @@ export function GradeChart({ courseId }) {
   }
 
   return (
-    <Box mt={8} p={4} borderRadius="lg" w="640px" bg="colorPalette.950">
+    <Box mt={8} p={4} borderRadius="lg" w="640px" bg="colorPalette.900">
       <Scatter 
         key={courseId}
         id="grades-chart"
