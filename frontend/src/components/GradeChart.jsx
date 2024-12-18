@@ -53,6 +53,8 @@ export function GradeChart({ courseId }) {
   }
 
   const options = {
+    maintainAspectRatio: false,
+    responsive: true,
     scales: {
       y: {
         title: { display: true, text: 'grade' },
@@ -88,7 +90,7 @@ export function GradeChart({ courseId }) {
   }
 
   return (
-    <Box mt={8} p={4} borderRadius="lg" w="640px" bg="colorPalette.900">
+    <Box mt={8} p={4} borderRadius="lg" w="100%" h={360} bg="colorPalette.900">
       <Scatter 
         key={courseId}
         id="grades-chart"

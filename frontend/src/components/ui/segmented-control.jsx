@@ -24,6 +24,7 @@ export const SegmentedControl = React.forwardRef(
               key={item.value}
               value={item.value}
               disabled={item.disabled}
+              padding={{ base: '0.5rem 0.875rem', sm: '0.5rem 1rem' }}
             >
               <SegmentGroup.ItemText>{item.label}</SegmentGroup.ItemText>
               <SegmentGroup.ItemHiddenInput />

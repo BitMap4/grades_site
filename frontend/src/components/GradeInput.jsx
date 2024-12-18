@@ -110,6 +110,7 @@ export function GradeInput({ courseId }) {
                   items={gradeOptions}
                   onValueChange={({ value }) => field.onChange(value)}
                   // className="dark"
+                  size={{ base: 'sm', sm: 'md' }}
                 />
               </Field>
             )}

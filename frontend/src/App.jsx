@@ -14,7 +14,13 @@ function AppContent() {
   const { logout } = useAuth()
 
   return (
-    <Container maxW="container.sm" py={10}>
+    <Container 
+      py={10} 
+      maxW={{
+        base: "sm",  // Mobile
+        sm: "100%"  // Desktop
+      }}
+    >
       <HStack mb={6}>
         <Spacer />
         <Button onClick={logout}>logout</Button>

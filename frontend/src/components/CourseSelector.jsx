@@ -37,7 +37,7 @@ export function CourseSelector({ onSelect }) {
   }, [filteredCourses])
 
   return (
-    <Stack gap="5" width="320px">
+    <Stack gap="5">
       <SelectRoot
         size="md"
         collection={courseCollection}
