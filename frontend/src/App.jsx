@@ -16,9 +16,9 @@ function AppContent() {
   return (
     <Container 
       py={10} 
-      maxW={{
-        base: "sm",  // Mobile
-        sm: "100%"  // Desktop
+      w={{
+        base: "sm",
+        sm: "lg"
       }}
     >
       <HStack mb={6}>
