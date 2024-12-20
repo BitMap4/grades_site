@@ -6,6 +6,8 @@ import os
 
 load_dotenv()
 
+DEBUG = bool(os.getenv('DEBUG'))
+
 # rate limits
 RL_GRADES = os.getenv('RL_GRADES')
 RL_DEFAULT = os.getenv('RL_DEFAULT')
