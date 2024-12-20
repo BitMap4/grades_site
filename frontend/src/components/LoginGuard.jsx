@@ -16,9 +16,9 @@ export function LoginGuard({ children }) {
     return (
       <Center h="100vh">
         <VStack spacing={4}>
-          <Heading size="lg">Please login to continue</Heading>
+          <Heading size="lg">login to continue</Heading>
           <Button colorScheme="blue" onClick={login}>
-            Login with IIIT Account
+            login with IIIT Account
           </Button>
         </VStack>
       </Center>

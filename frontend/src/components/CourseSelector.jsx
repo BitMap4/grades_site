@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValueText,
 } from '@components/ui/select'
+import { toaster, Toaster } from '@components/ui/toaster'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useMemo, useState } from 'react'
@@ -15,9 +16,27 @@ export function CourseSelector({ onSelect }) {
   const { data: courses, isLoading } = useQuery({
     queryKey: ['courses'],
     queryFn: async () => {
-      const response = await axios.get('http://localhost:8000/courses')
-      return response.data
-    }
+      try {
+        const response = await axios.get('http://localhost:8000/courses', {
+          withCredentials: true
+        })
+        return response.data
+      } catch (error) {
+        if (error.response?.status === 429) {
+          // const retryAfter = error.response.headers['x-ratelimit-reset']
+          // const retryAfterMinutes = Math.ceil(retryAfter / 60)
+          toaster.create({
+            title: 'rate limit exceeded',
+            // description: 'course selector',
+            // description: `too many requests. try again in ${retryAfterMinutes} minutes`,
+            type: 'error',
+            duration: 5000,
+          })
+        }
+        throw error
+      }
+    },
+    retry: false
   })
 
   const filteredCourses = useMemo(() => {

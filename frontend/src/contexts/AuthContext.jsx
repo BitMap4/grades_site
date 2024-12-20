@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { Toaster, toaster } from '@components/ui/toaster'
 
 // Create and export context
 export const AuthContext = createContext(null)
@@ -21,11 +22,22 @@ export function AuthProvider({ children }) {
     checkAuth()
   }, [])
 
-  const checkAuth = async () => {
+    const checkAuth = async () => {
     try {
       const response = await fetch('http://localhost:8000/auth/has_login', {
         credentials: 'include'
       })
+      if (response.status === 429) {
+        // const retryAfter = response.headers.get('x-ratelimit-reset')
+        // const retryAfterSeconds = Math.ceil(retryAfter)
+        toaster.create({
+          title: 'rate limit exceeded',
+          // description: `too many auth checks. try again in ${retryAfterSeconds} seconds`,
+          type: 'error',
+          duration: 5000,
+        })
+        throw new Error('Rate limit exceeded')
+      }
       const data = await response.json()
       setIsAuthenticated(data.authenticated)
     } catch (error) {
@@ -53,6 +65,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
+      <Toaster />
       {children}
     </AuthContext.Provider>
   )

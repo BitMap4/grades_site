@@ -12,7 +12,7 @@ const gradeOptions = ['A', 'A-', 'B', 'B-', 'C', 'C-', 'D', 'D-', 'F']
 
 export function GradeInput({ courseId }) {
   const queryClient = useQueryClient()
-  const { login } = useAuth()
+  const { isAuthenticated, isLoading, login } = useAuth()
   const {
     register,
     control,
@@ -27,18 +27,34 @@ export function GradeInput({ courseId }) {
 
   const mutation = useMutation({
     mutationFn: async (data) => {
-      const response = await axios.post('http://localhost:8000/grades', data, {
-        withCredentials: true
-      })
-      return response.data
+      try {
+        const response = await axios.post('http://localhost:8000/grades', data, {
+          withCredentials: true
+        })
+        return response.data
+      } catch (error) {
+        throw error
+      }
     },
     onError: (error) => {
       if (error.response?.status === 401) {
         login()
         return
       }
+      if (error.response?.status === 429) {
+        // const retryAfter = error.response.headers['x-ratelimit-reset']
+        // const retryAfterSeconds = Math.ceil(retryAfter)
+        toaster.create({
+          title: 'rate limit exceeded',
+          // description: 'grade input',
+          // description: `too many requests. try again in ${retryAfterSeconds} seconds`,
+          type: 'error',
+          duration: 5000,
+        })
+        return
+      }
       toaster.create({
-        title: 'Error',
+        title: 'error',
         description: error.message,
         type: 'error',
         duration: 3000,
@@ -46,7 +62,7 @@ export function GradeInput({ courseId }) {
     },
     onSuccess: () => {
       toaster.create({
-        title: 'Success',
+        title: 'success',
         description: 'grade submitted',
         type: 'success',
         duration: 3000,
@@ -80,11 +96,8 @@ export function GradeInput({ courseId }) {
               {...register('marks', { 
                 required: 'total marks required',
                 min: { value: 0, message: 'marks must be positive (over for u if its actually negative)' },
-                max: { value: 100, message: 'marks cannot be more 100 (congrats if they are)' },
+                max: { value: 100, message: 'marks cannot be more 100' },
                 valueAsNumber: true,
-                validate: {
-                  decimal: v => Number.isFinite(v) || 'enter a valid number'
-                }
               })}
               type="number"
               step={0.01}

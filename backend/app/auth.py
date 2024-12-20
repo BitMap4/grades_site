@@ -1,16 +1,15 @@
-# auth.py
-
 import cas
 from fastapi import APIRouter, Request, HTTPException, Depends
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from .config import (
     SessionLocal, HOST_BASE_URL, CAS_SERVER_URL, FRONTEND_URL,
-    SECRET_KEY, ALGORITHM, LIFETIME
+    SECRET_KEY, ALGORITHM, LIFETIME, RL_DEFAULT, RL_HAS_LOGIN
 )
 from .models import UserDB
+from .rate_limit import limiter
 
 router = APIRouter()
 
@@ -29,7 +28,7 @@ def get_db():
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=LIFETIME)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=LIFETIME)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -37,7 +36,7 @@ def create_access_token(data: dict):
 async def get_current_user(request: Request, db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=401,
-        detail="Could not validate credentials"
+        detail="could not validate credentials"
     )
     
     token = request.cookies.get("auth_token")
@@ -58,6 +57,7 @@ async def get_current_user(request: Request, db: Session = Depends(get_db)):
     return user
 
 @router.get("/login")
+@limiter.limit(RL_DEFAULT)
 async def login(request: Request, db: Session = Depends(get_db)):
     token = request.cookies.get("auth_token")
     if token:
@@ -87,32 +87,30 @@ async def login(request: Request, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(db_user)
 
-    # Create JWT token
     access_token = create_access_token({"sub": user})
     
     response = RedirectResponse(FRONTEND_URL)
     response.set_cookie(
         key="auth_token",
         value=access_token,
-        httponly=True,
         secure=True,
-        samesite='lax',
-        path="/"
+        httponly=True
     )
     return response
 
 @router.get("/logout")
-async def logout():
+@limiter.limit(RL_DEFAULT)
+async def logout(request: Request):
     response = RedirectResponse(cas_client.get_logout_url())
     response.delete_cookie(
         key="auth_token",
-        path="/",
         secure=True,
         httponly=True
     )
     return response
 
 @router.get("/has_login")
+@limiter.limit(RL_HAS_LOGIN)
 async def has_login(request: Request):
     token = request.cookies.get("auth_token")
     if not token:

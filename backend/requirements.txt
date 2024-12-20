@@ -1,5 +1,6 @@
 sqlalchemy
 fastapi
+slowapi
 uvicorn
 pydantic
 python-dotenv
@@ -8,4 +9,4 @@ python-jose[cryptography]
 # passlib[bcrypt]
 # python-multipart
 python-cas
-python-env
+# python-env

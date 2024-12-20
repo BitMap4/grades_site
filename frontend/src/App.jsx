@@ -35,13 +35,13 @@ function App() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <ChakraProvider value={defaultSystem}>
+        <ChakraProvider value={defaultSystem}>
+          <AuthProvider>
             <LoginGuard>
               <AppContent />
             </LoginGuard>
-          </ChakraProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </ChakraProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   )

@@ -4,16 +4,33 @@ import { Chart as ChartJS } from 'chart.js/auto'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useEffect } from 'react'
+import { toaster, Toaster } from '@components/ui/toaster'
 
 export function GradeChart({ courseId }) {
   const { data: grades, isLoading } = useQuery({
     queryKey: ['grades', courseId],
     queryFn: async () => {
-      const response = await axios.get(`http://localhost:8000/grades/${courseId}`, {
-        withCredentials: true
-      })
-      return response.data
-    }
+      try {
+        const response = await axios.get(`http://localhost:8000/get_grades/${courseId}`, {
+          withCredentials: true
+        })
+        return response.data
+      } catch (error) {
+        console.log(error)
+        if (error.response?.status === 429) {
+          // const retryAfter = error.response.headers['x-ratelimit-reset']
+          // const retryAfterSeconds = Math.ceil(retryAfter)
+          toaster.create({
+            title: 'rate limit exceeded',
+            // description: 'grade chart',
+            type: 'error',
+            duration: 5000,
+          })
+        }
+        throw error  // Re-throw to trigger React Query's error handling
+      }
+    },
+    retry: false  // Disable automatic retries
   })
 
   useEffect(() => {
@@ -30,6 +47,7 @@ export function GradeChart({ courseId }) {
     return (
       <Center h="200px">
         <Spinner />
+        <Toaster />
       </Center>
     )
   }
@@ -97,6 +115,7 @@ export function GradeChart({ courseId }) {
         data={chartData} 
         options={options} 
       />
+      <Toaster />
     </Box>
   )
 }

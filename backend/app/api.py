@@ -1,12 +1,17 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import List
-from .config import SessionLocal
+from .config import SessionLocal, RL_DEFAULT, RL_GRADES
 from .models import GradeDB, Grade, UserDB, CourseDB
 from .auth import get_current_user, router
+from .rate_limit import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 app = FastAPI()
-
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.include_router(router, prefix="/auth", tags=["auth"])
 
 def get_db():
@@ -15,7 +20,8 @@ def get_db():
     finally: db.close()
 
 @app.get("/courses")
-async def get_courses(db: Session = Depends(get_db)):
+@limiter.limit(RL_DEFAULT)
+async def get_courses(request: Request, db: Session = Depends(get_db)):
     courses = db.query(CourseDB).order_by(CourseDB.id_sem).all()
     return [
         {
@@ -25,7 +31,9 @@ async def get_courses(db: Session = Depends(get_db)):
     ]
 
 @app.post("/grades")
+@limiter.limit(RL_GRADES)
 async def submit_grade(
+    request: Request,
     grade: Grade, 
     db: Session = Depends(get_db),
     current_user: UserDB = Depends(get_current_user)
@@ -55,11 +63,20 @@ async def submit_grade(
     
     return {"status": "created", "id": db_grade.id}
 
-@app.get("/grades/{course_id}", response_model=List[Grade])
+@app.get("/get_grades/{course_id}", response_model=List[Grade])
+@limiter.limit(RL_DEFAULT)
 async def get_grades(
+    request: Request,
     course_id: str, 
     db: Session = Depends(get_db),
     current_user: UserDB = Depends(get_current_user)
 ):
     grades = db.query(GradeDB.course_id, GradeDB.grade, GradeDB.total_marks).filter(GradeDB.course_id == course_id).all()
     return grades
+
+@app.exception_handler(429)
+async def rate_limit(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=429,
+        content={"message": "rate limit exceeded"}
+    )
