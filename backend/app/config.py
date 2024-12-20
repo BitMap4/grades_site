@@ -6,7 +6,7 @@ import os
 
 load_dotenv()
 
-DEBUG = bool(os.getenv('DEBUG'))
+DEBUG = True if os.getenv('DEBUG') == 'True' else False
 
 # rate limits
 RL_GRADES = os.getenv('RL_GRADES')
