@@ -10,7 +10,7 @@ Website for approximating the grade cutoffs for courses by using user-submitted 
 - [NPM](https://www.npmjs.com/)
 - [Python 3](https://www.python.org/downloads/)
 
-### Setup
+### Running
 
 1. Backend
    ```bash
@@ -18,7 +18,7 @@ Website for approximating the grade cutoffs for courses by using user-submitted 
    python3 -m venv venv
    source venv/bin/activate
    pip install -r requirements.txt
-   uvicorn app.api:app --reload --port 8000
+   python3 run.py
    ```
 2. Frontend
    ```bash
