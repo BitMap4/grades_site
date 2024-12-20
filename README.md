@@ -33,13 +33,14 @@ Website for approximating the grade cutoffs for courses by using user-submitted 
 
 ## TODO
 - [ ] Allow users to add courses
+- [x] Fix width when no course is selected
 - [x] Interface for viewing grade cutoffs
 - [x] [!] Add info for users, like "only one submission per course"
 - [x] Styling
 - [x] [!!] Refactor backend code
-- [ ] [!] Use dropdown with search input for course selection
-- [-] Mobile responsiveness
+- [x] [!] Use dropdown with search input for course selection
+- [x] Mobile responsiveness
 - [x] [!!] Replace temp and secret stuff with env variables
 - [x] [!!] use jwt for cookies
-- [ ] Allow same course in different years
-- [ ] Rate limiting
+- [x] Allow same course in different years
+- [x] Rate limiting
