@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
     checkAuth()
   }, [])
 
-    const checkAuth = async () => {
+  const checkAuth = async () => {
     try {
       const response = await fetch('http://localhost:8000/auth/has_login', {
         credentials: 'include'
