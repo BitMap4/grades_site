@@ -94,6 +94,7 @@ async def login(request: Request, db: Session = Depends(get_db)):
         key="auth_token",
         value=access_token,
         secure=True,
+        samesite="none",
         httponly=True
     )
     return response
