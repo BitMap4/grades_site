@@ -21,5 +21,5 @@ export default defineConfig({
   define: {
     __DEBUG__: JSON.stringify(true),
   },
-  base: 'https://bitmap4.github.io/grades_site/',
+  base: 'https://grades-site.onrender.com',
 })

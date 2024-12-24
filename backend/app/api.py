@@ -8,11 +8,16 @@ from .auth import get_current_user, router
 from .rate_limit import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from starlette.staticfiles import StaticFiles
+from pathlib import Path
 
 app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.include_router(router, prefix="/auth", tags=["auth"])
+
+dist_path = Path(__file__).parent.parent/"frontend"/"dist"
+app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
 
 def get_db():
     db = SessionLocal()
