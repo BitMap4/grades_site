@@ -16,7 +16,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.include_router(router, prefix="/auth", tags=["auth"])
 
-dist_path = Path(__file__).parent.parent/"frontend"/"dist"
+dist_path = Path(__file__).parent.parent.parent/"frontend"/"dist"
 app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
 
 def get_db():
