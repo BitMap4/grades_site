@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
 
   const checkAuth = async () => {
     try {
-      const response = await fetch('http://localhost:8000/auth/has_login', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/has_login`, {
         credentials: 'include'
       })
       if (response.status === 429) {
@@ -49,11 +49,11 @@ export function AuthProvider({ children }) {
   }
 
   const login = () => {
-    window.location.href = 'http://localhost:8000/auth/login'
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/login`
   }
 
   const logout = () => {
-    window.location.href = 'http://localhost:8000/auth/logout'
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/logout`
   }
 
   const value = {

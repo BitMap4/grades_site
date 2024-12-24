@@ -11,7 +11,7 @@ export function GradeChart({ courseId }) {
     queryKey: ['grades', courseId],
     queryFn: async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/get_grades/${courseId}`, {
+        const response = await axios.get(`${ import.meta.env.VITE_API_URL}/get_grades/${courseId}`, {
           withCredentials: true
         })
         return response.data

@@ -17,7 +17,7 @@ export function CourseSelector({ onSelect }) {
     queryKey: ['courses'],
     queryFn: async () => {
       try {
-        const response = await axios.get('http://localhost:8000/courses', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/courses`, {
           withCredentials: true
         })
         return response.data
