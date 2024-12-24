@@ -21,4 +21,5 @@ export default defineConfig({
   define: {
     __DEBUG__: JSON.stringify(true),
   },
+  base: 'https://bitmap4.gitub.io/grades_site/',
 })
