@@ -3,6 +3,7 @@ from .api import app
 from .config import FRONTEND_URL, SessionLocal
 from sqlalchemy import inspect
 from .models import Base, CourseDB
+from urllib.parse import urlparse
 
 inspector = inspect(SessionLocal().get_bind())
 tables = inspector.get_table_names()
@@ -29,9 +30,10 @@ try:
 finally:
     db.close()
 
+parsed = urlparse(FRONTEND_URL)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL, "http://localhost:5173"],
+    allow_origins=[f'{parsed.scheme}://{parsed.netloc}', "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
