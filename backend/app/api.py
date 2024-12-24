@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, HTTPException, Request, APIRouter
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import List
@@ -14,17 +14,15 @@ from pathlib import Path
 app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.include_router(router, prefix="/auth", tags=["auth"])
-
-dist_path = Path(__file__).parent.parent.parent/"frontend"/"dist"
-app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
 
 def get_db():
     db = SessionLocal()
     try: yield db
     finally: db.close()
 
-@app.get("/courses")
+api_router = APIRouter(prefix="/api")
+
+@api_router.get("/courses")
 @limiter.limit(RL_DEFAULT)
 async def get_courses(request: Request, db: Session = Depends(get_db)):
     courses = db.query(CourseDB).order_by(CourseDB.id_sem).all()
@@ -35,7 +33,7 @@ async def get_courses(request: Request, db: Session = Depends(get_db)):
         } for course in courses
     ]
 
-@app.post("/grades")
+@api_router.post("/grades")
 @limiter.limit(RL_GRADES)
 async def submit_grade(
     request: Request,
@@ -68,7 +66,7 @@ async def submit_grade(
     
     return {"status": "created", "id": db_grade.id}
 
-@app.get("/get_grades/{course_id}", response_model=List[Grade])
+@api_router.get("/get_grades/{course_id}", response_model=List[Grade])
 @limiter.limit(RL_DEFAULT)
 async def get_grades(
     request: Request,
@@ -78,6 +76,12 @@ async def get_grades(
 ):
     grades = db.query(GradeDB.course_id, GradeDB.grade, GradeDB.total_marks).filter(GradeDB.course_id == course_id).all()
     return grades
+
+app.include_router(router, prefix="/auth", tags=["auth"])
+app.include_router(api_router)
+
+dist_path = Path(__file__).parent.parent.parent/"frontend"/"dist"
+app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
 
 @app.exception_handler(429)
 async def rate_limit(request: Request, exc: HTTPException):

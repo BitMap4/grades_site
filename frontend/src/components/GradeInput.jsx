@@ -28,7 +28,7 @@ export function GradeInput({ courseId }) {
   const mutation = useMutation({
     mutationFn: async (data) => {
       try {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/grades`, data, {
+        const response = await axios.post(`${import.meta.env.VITE_api_url}/api/grades`, data, {
           withCredentials: true
         })
         return response.data
